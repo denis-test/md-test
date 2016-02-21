@@ -1,6 +1,7 @@
 <?php
 namespace Framework;
 use Framework\Router\Router;
+use Framework\Response\Response;
 
 /*
  * Class Application
@@ -25,7 +26,16 @@ class Application {
 		    }
 	
 		    echo '<pre>';
-			print_r($route);
+			//print_r($route);
+			
+			
+			
 		}
+		//$route =  $router->buildRoute('edit_post', array('id' => 8));
+		$route =  $router->buildRoute('add_post');
+		
+		$response = new Response();
+		$response->sendResponse();
 	}
+	
 }

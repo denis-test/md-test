@@ -27,7 +27,7 @@ class Router{
 		foreach(self::$map as $route){
 			
 			$pattern = $this->prepare($route);
-			echo $pattern.'<br />';
+			//echo $pattern.'<br />';
 			if(preg_match($pattern, $url, $params)){
 				//var_dump($route['pattern']);
 				//var_dump($params);
@@ -47,12 +47,68 @@ class Router{
 		}
 		return $route_found;
 	}
+	
 	public function buildRoute($route_name, $params = array()){
-		// @TODO: Your code...
+		$route_found = '';
+		
+		if(isset(self::$map[$route_name])){
+			$route = self::$map[$route_name];
+			
+			//Find all placeholders
+			preg_match('~\{[\w\d_]+\}~Ui', $route['pattern'], $placeholders);
+				
+			foreach ($placeholders as $key => $placeholder) {
+				$placeholder = str_replace(array('{','}'), '', $placeholder);
+				
+				if (isset($route['_requirements'][$placeholder])){
+					$pattern = '~^'. $route['_requirements'][$placeholder].'$~';
+				}else{
+					$pattern = '~^[\w\d_]+$~';
+				}
+				
+				if(isset($params[$placeholder]) && preg_match($pattern, $params[$placeholder], $result)){
+					$route_found = str_replace('{'.$placeholder.'}', $params[$placeholder], $route['pattern']);
+				}else{
+					$route_found = '';
+					break;
+				}
+			}
+		}
+		
+		return $route_found;
 	}
+	
 	private function prepare($route){
 		$pattern = preg_replace('~\{[\w\d_]+\}~Ui','([\w\d_]+)', $route['pattern']);
 		$pattern = '~^'. $pattern.'$~';
 		return $pattern;
 	}
 }
+//if(!empty($placeholders)){
+				/*
+				foreach ($placeholders as $placeholder) {
+					$placeholder = str_replace(array('{','}'), '', $placeholder);
+					
+					if (isset($route['_requirements'][$placeholder])){
+						$pattern = '~^'. $route['_requirements'][$placeholder].'$~';
+					}else{
+						$pattern = '~^[\w\d_]+$~';
+					}
+					
+					if(isset($params[$placeholder])){
+						preg_match($pattern, $params[$placeholder], $result);
+					}else{
+						$error_found = true;
+						break;
+					}	
+					
+					if ($result){
+						$tmp_route_found = str_replace('{'.$placeholder.'}', $params[$placeholder], $route['pattern']);
+					}else{
+						$error_found = true;
+						break;
+					}
+				}*/
+				
+					//$error_found? : $route_found = $tmp_route_found;
+			//}
