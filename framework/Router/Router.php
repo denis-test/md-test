@@ -12,18 +12,18 @@ class Router{
 	 * Class construct
 	 */
 	public function __construct($routing_map = array()){
-		self::$map = $routing_map;
+		self::$map = (array) $routing_map;
 	}
 	/**
 	 * Parse URL
 	 *
 	 * @param $url
 	 */
-	public function parseRoute($url){
+	public function parseRoute($url = ''){
     
 		$route_found = null;
 		//var_dump(self::$map);
-		echo "<pre>";
+		//echo "<pre>";
 		foreach(self::$map as $route){
 			
 			$pattern = $this->prepare($route);
