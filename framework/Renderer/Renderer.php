@@ -1,5 +1,7 @@
 <?php
 namespace Framework\Renderer;
+
+use Framework\DI\Service;
 /**
  * Class Renderer
  * @package Framework\Renderer
@@ -49,9 +51,21 @@ class Renderer {
 		$include = function($p1, $p2, $p3){
 				
 			};
-		$getRoute = function($pr1){
-				echo 'Hi I\'m getRoute('.$pr1.')';
+		$generateToken = function(){
+				
 			};
+		//$getRoute = function($pr1){
+		//		echo 'Hi I\'m getRoute('.$pr1.')';
+		//	};
+		//$router = service::get('Router');
+		
+		//$result = $router->getRoute('add_post');
+		//var_dump($result);
+		$getRoute = function($route, $params=array()) {
+			$router = service::get('Router');
+			return call_user_func(array($router, 'getRoute'), $route);
+		};
+			
 		$user = NULL;
 		$flush = array(); 
 		ob_start();
@@ -67,5 +81,9 @@ class Renderer {
 			//var_dump($content);
 		}
 		return $content;
+	}
+	
+	public function redirect(){
+		return 'redirect';
 	}
 } 

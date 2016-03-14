@@ -1,31 +1,42 @@
 <?php
 namespace Framework\Model;
 
-class TestPosts{
-	public $id;
-	public $title;
-	public $date;
-	public $name;
-	public $content;
-}
+use Framework\DI\Service;
 
-class ActiveRecord{
-	public static function find($what){
-		$posts[1] = new TestPosts;
-		$posts[2] = new TestPosts;
+abstract class ActiveRecord {
+	public $name; // Удалить после реализации User
+	
+	public static function getTable(){
 		
-		$posts[1]->id = '1';
-		$posts[1]->title = 'Post_title';
-		$posts[1]->date = '25-02-2016';
-		$posts[1]->name = 'PostName';
-		$posts[1]->content = 'PostContent';
+	}
+	
+	
+	public static function find($mode = 'all'){
+		$table = static::getTable();
+		$params = array();
 		
-		$posts[2]->id = '2';
-		$posts[2]->title = 'Post_title2';
-		$posts[2]->date = '26-02-2016';
-		$posts[2]->name = 'PostName2';
-		$posts[2]->content = 'PostContent2';
+		$sql = "SELECT * FROM " . $table;
+		if(is_numeric($mode)){
+			$sql .= " WHERE id= :mode";
+			$params = array('mode' => (int)$mode);
+		}
+			
+		$pdo = service::get('db')->getDBCon();
 		
-		return $posts;
+		$stmt = $pdo->prepare($sql);
+		$stmt->execute($params);
+		
+		$result = $stmt->fetchAll(\PDO::FETCH_CLASS, "Blog\Model\Post");
+		
+		return $result;
+	}
+	protected function getFields(){ // Возможно потребуется для save, нет удалить
+		//return get_object_vars($this);
+		//mysql_list_fields ( string $database_name , string $table_name [, resource $link_identifier = NULL ] )
+	}
+
+	public function save(){
+		$fields = $this->getFields();
+		// @TODO: build SQL expression, execute
 	}
 }

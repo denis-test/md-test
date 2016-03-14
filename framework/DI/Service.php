@@ -1,51 +1,26 @@
 <?php
 namespace Framework\DI;
+/**    
+ * Service.php
+ * 
+ */
 
 class Service {
-	protected static $instance;
-	protected $containerConfig = array();
 	protected static $services = array();
+	protected static $configs = array();
 	
-	protected function __construct() //AbstractConfig $config)
-    {
-        //$this->config = $config;
-        //$this->init();
-        $this->containerConfig['Request']['name'] = 'Request';
-        $this->containerConfig['Request']['path'] = '/home/site/prj/mindk-test.local/www/framework/Request/Request.php';
-        $this->containerConfig['Request']['namespace'] = 'Framework\Request';
-        $this->containerConfig['Response'] = 'Response';
+	
+	
+	public static function set($service_name, $service_namespace){
+		//self::$services[$service_name] = $obj;
+		self::$configs[$service_name] = $service_namespace;
 	}
 	
-	
-	
-	public static function getInstance() //AbstractConfig $config)
-    {
-        if(!self::$instance) {
-            self::$instance = new self(); //$config);
-        }
-
-        return self::$instance;
-    }
-
-    /**
-     * @param string $serviceName
-     *
-     * @return object
-     */
-    public function get($serviceName)
-    {
-        //var_dump(self::$services[$serviceName]);
-		
-        if(isset(self::$services[$serviceName])) {
-           return self::$services[$serviceName];
-        }
-        
-        if(isset($this->containerConfig[$serviceName])){
-			self::$services[$serviceName] = new \Framework\Request\Request();
-			return self::$services[$serviceName];
+	public static function get($service_name){
+		if(!isset(self::$services[$service_name])){
+			self::$services[$service_name] = new self::$configs[$service_name];
 		}
-        
-        return Null;
-    }
-	
-}
+		
+		return self::$services[$service_name];
+	}
+} 

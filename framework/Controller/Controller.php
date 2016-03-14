@@ -3,6 +3,7 @@ namespace Framework\Controller;
 
 use Framework\Response\Response;
 use Framework\Renderer\Renderer;
+use Framework\DI\Service;
 /**
  * Class Controller
  * Controller prototype
@@ -50,5 +51,19 @@ abstract class Controller {
 		$renderer = new Renderer($this->main_layout); // Try to define renderer like a service. e.g.: Service::get('renderer');
 		$content = $renderer->render($layout, $data);
 		return new Response($content);
+	}
+	
+	public function redirect($route, $msg){  // Переделать
+		$renderer = new Renderer($this->main_layout); 
+		$content = $renderer->redirect($route, $msg);
+		return new Response($content);
+	}
+	
+	public function getRequest(){
+		return Service::get('request');
+	}
+	
+	public function generateRoute($route){
+		return Service::get('Router')->getRoute($route);
 	}
 } 
